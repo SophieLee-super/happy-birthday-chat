@@ -4,7 +4,14 @@ Every version of this project stays reachable — updates are always new commits
 
 This repo was first published at v6 (2026-11-18). The earlier iterations were built and reviewed one by one before the first upload; they're recorded here so the project's story is complete.
 
-## v7 — 2026-11-20 · current · 中英合并 Bilingual
+## v8 — 2026-11-25 · current · 生日倒计时 Birthday Countdown
+
+- New **Act 0 — a big countdown page** is now the first screen: days / hours / minutes / seconds ticking down live to the next birthday at **00:00 China time (UTC+8)**, computed from the same `birthDate` (or `?date=`) — the visitor never fills anything in, and the viewer's own timezone never skews it
+- The countdown shows the target date and the age being turned; on the birthday itself (UTC+8) it switches to a "就是今天 / It's today!" state
+- A **开始 / Start** button leads into Act 1 (the chat) as before; the countdown is fully bilingual like everything else and follows the 中文 / EN switch
+- All four original acts unchanged
+
+## v7 — 2026-11-20 · 中英合并 Bilingual
 
 - **One project, one page, two languages**: the Chinese and English versions are merged into this single page — no more separate language repos
 - New **中文 / EN switch** (top-right) flips everything: the full chat script (including the auto-computed "Crazy Weekday" joke), all birthday-fact screens (birth weekday, same-day celebrities Lewis Hamilton & Nicolas Cage, the Galileo history line, birth flower, days alive, turning age), the cake texts, the closing letter, and every hint / button / status label

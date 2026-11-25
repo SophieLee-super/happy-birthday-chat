@@ -70,6 +70,19 @@
       }
       .progress span.on{background:var(--accent)}
 
+
+      /* ---------- Act 0 : birthday countdown ---------- */
+      .cd-wrap{text-align:center}
+      .cd-kicker{letter-spacing:.35em;color:var(--accent);font-weight:700;margin:0 0 10px}
+      .cd-title{font-size:clamp(1.4rem,6vw,2.2rem);margin:0 0 26px}
+      .cd-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:520px;margin:0 auto 22px}
+      .cd-cell{background:var(--card,#fff);border:1px solid rgba(0,0,0,.06);border-radius:16px;padding:14px 4px 10px;box-shadow:0 6px 18px rgba(0,0,0,.06)}
+      .cd-num{font-size:clamp(2rem,11vw,3.4rem);font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+      .cd-lab{margin-top:6px;font-size:.8rem;letter-spacing:.2em;opacity:.65}
+      .cd-today{font-size:clamp(2rem,10vw,3.2rem);font-weight:800;color:var(--accent);margin:10px 0 18px}
+      .cd-date{font-size:1.05rem;margin:0 0 4px}
+      .cd-turn{opacity:.75;margin:0 0 26px}
+      .cd-note{margin-top:14px;font-size:.8rem;opacity:.55}
       /* ---------- language switch ---------- */
       .lang-switch{
         position:fixed;top:9px;right:12px;z-index:50;
@@ -319,8 +332,28 @@
       </div>
     </section>
 
-    <!-- Act 1 : chat (the first screen) -->
-    <section class="stage active" id="act-chat">
+
+    <!-- Act 0 : birthday countdown (UTC+8) — no input needed, tap Start to enter -->
+    <section class="stage" id="act-countdown">
+      <div class="wrap cd-wrap">
+        <p class="cd-kicker" id="cd-kicker"></p>
+        <h2 class="cd-title" id="cd-title"></h2>
+        <div class="cd-grid" id="cd-grid">
+          <div class="cd-cell"><div class="cd-num" id="cd-d">--</div><div class="cd-lab" id="cd-d-lab"></div></div>
+          <div class="cd-cell"><div class="cd-num" id="cd-h">--</div><div class="cd-lab" id="cd-h-lab"></div></div>
+          <div class="cd-cell"><div class="cd-num" id="cd-m">--</div><div class="cd-lab" id="cd-m-lab"></div></div>
+          <div class="cd-cell"><div class="cd-num" id="cd-s">--</div><div class="cd-lab" id="cd-s-lab"></div></div>
+        </div>
+        <p class="cd-today" id="cd-today" hidden></p>
+        <p class="cd-date" id="cd-date"></p>
+        <p class="cd-turn" id="cd-turn"></p>
+        <button class="btn-primary" id="cd-start"></button>
+        <p class="cd-note" id="cd-note"></p>
+      </div>
+    </section>
+
+    <!-- Act 1 : chat -->
+    <section class="stage" id="act-chat">
       <div class="phone" id="phone" role="region" aria-label="模拟聊天">
         <div class="phone-notch"></div>
         <div class="chat-head">
@@ -416,7 +449,11 @@
         chatAria: "模拟聊天", choicesAria: "点一个回复", specialAria: "点一下看下一个",
         next: "下 一 个", goWish: "去 许 愿 →", candleAria: "吹灭蜡烛",
         toLetter: "打开最后一封信 →", letterSkip: "跳过打字，直接看完",
-        replay: "再看一遍 ↺", yearSuffix: "年"
+        replay: "再看一遍 ↺", yearSuffix: "年",
+        cdKicker: "生 日 倒 计 时", cdTitle: "距离你的生日，还有",
+        cdDays: "天", cdHours: "小时", cdMinutes: "分钟", cdSeconds: "秒",
+        cdStart: "开始 →", cdToday: "就是今天！", cdNote: "时间按东八区（UTC+8）计算",
+        cdTurnPrefix: "这一天，你就 ", cdTurnSuffix: " 岁了"
       },
       en: {
         tapContinue: "T A P   T O   C O N T I N U E", online: "Online", today: "Today",
@@ -425,7 +462,11 @@
         chatAria: "Simulated chat", choicesAria: "Tap a reply", specialAria: "Tap for the next one",
         next: "N E X T", goWish: "MAKE A WISH →", candleAria: "Blow out the candle",
         toLetter: "Open the last letter →", letterSkip: "Skip typing — show it all",
-        replay: "Watch again ↺", yearSuffix: ""
+        replay: "Watch again ↺", yearSuffix: "",
+        cdKicker: "B I R T H D A Y   C O U N T D O W N", cdTitle: "Counting down to your birthday",
+        cdDays: "DAYS", cdHours: "HOURS", cdMinutes: "MINUTES", cdSeconds: "SECONDS",
+        cdStart: "Start →", cdToday: "It's today!", cdNote: "Timed in UTC+8 (China time)",
+        cdTurnPrefix: "On that day, you turn ", cdTurnSuffix: ""
       }
     };
 
@@ -673,7 +714,7 @@
     function wait(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
     var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    var stages = ["stage-interlude","act-chat","act-special","act-cake","act-letter"];
+    var stages = ["act-countdown","stage-interlude","act-chat","act-special","act-cake","act-letter"];
     function showStage(id){
       stages.forEach(function(s){ $(s).classList.toggle("active", s === id); });
       window.scrollTo(0,0);
@@ -1057,6 +1098,61 @@
       startChat();
     });
 
+
+    /* ---------------- Act 0 : birthday countdown — always UTC+8 ----------------
+       Target: the next birthday at 00:00 China time, computed from BIRTH.
+       No input from the visitor; the viewer's own timezone never matters. */
+    var CD_MONTHS_EN = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    var CD_OFFSET_MS = 8 * 3600 * 1000;
+    function cdInfo(){
+      if (!BIRTH) return null;
+      var now = Date.now();
+      var sh = new Date(now + CD_OFFSET_MS);
+      var y = sh.getUTCFullYear(), m = sh.getUTCMonth() + 1, d = sh.getUTCDate();
+      var isToday = (m === BIRTH.month && d === BIRTH.day);
+      var ty = (m > BIRTH.month || (m === BIRTH.month && d > BIRTH.day)) ? y + 1 : y;
+      return { isToday: isToday, ty: ty, age: ty - BIRTH.year,
+               target: Date.UTC(ty, BIRTH.month - 1, BIRTH.day) - CD_OFFSET_MS };
+    }
+    function cdPad(n){ return (n < 10 ? "0" : "") + n; }
+    function cdRenderText(){
+      var t = UI[LANG];
+      $("cd-kicker").textContent = t.cdKicker;
+      $("cd-title").textContent = t.cdTitle;
+      $("cd-d-lab").textContent = t.cdDays;
+      $("cd-h-lab").textContent = t.cdHours;
+      $("cd-m-lab").textContent = t.cdMinutes;
+      $("cd-s-lab").textContent = t.cdSeconds;
+      $("cd-start").textContent = t.cdStart;
+      $("cd-note").textContent = t.cdNote;
+      var info = cdInfo();
+      if (info && BIRTH){
+        $("cd-date").textContent = LANG === "en"
+          ? CD_MONTHS_EN[BIRTH.month - 1] + " " + BIRTH.day + ", " + info.ty + " · 00:00"
+          : info.ty + " 年 " + BIRTH.month + " 月 " + BIRTH.day + " 日 · 00:00";
+        $("cd-turn").textContent = t.cdTurnPrefix + info.age + t.cdTurnSuffix;
+      }
+      cdTick();
+    }
+    function cdTick(){
+      var info = cdInfo();
+      if (!info) return;
+      var grid = $("cd-grid"), todayEl = $("cd-today");
+      if (info.isToday){
+        grid.style.display = "none";
+        todayEl.hidden = false;
+        todayEl.textContent = UI[LANG].cdToday;
+        return;
+      }
+      grid.style.display = "";
+      todayEl.hidden = true;
+      var s = Math.max(0, Math.floor((info.target - Date.now()) / 1000));
+      $("cd-d").textContent = Math.floor(s / 86400);
+      $("cd-h").textContent = cdPad(Math.floor(s % 86400 / 3600));
+      $("cd-m").textContent = cdPad(Math.floor(s % 3600 / 60));
+      $("cd-s").textContent = cdPad(s % 60);
+    }
+
     /* ---------------- 语言切换：一个页面，两种语言 ---------------- */
     function applyLanguage(){
       var t = UI[LANG];
@@ -1064,6 +1160,7 @@
       $("lang-zh").classList.toggle("on", LANG === "zh");
       $("lang-en").classList.toggle("on", LANG === "en");
       $("interlude-hint").textContent = t.tapContinue;
+      cdRenderText();
       $("chat-status").textContent = t.online;
       $("day-divider").textContent = t.today;
       $("chat-note").textContent = t.chatNote;
@@ -1118,8 +1215,14 @@
     $("lang-en").addEventListener("click", function(){ setLanguage("en"); });
     applyLanguage();
 
-    /* 第一屏就是聊天：页面打开，Act 1 直接开始 */
-    startChat();
+    /* 第一屏：生日倒计时（东八区）——点「开始」进入 Act 1 聊天 */
+    showStage("act-countdown");
+    cdRenderText();
+    var cdTimer = setInterval(cdTick, 250);
+    $("cd-start").addEventListener("click", function(){
+      clearInterval(cdTimer);
+      startChat();
+    });
     </script>
   </body>
 </html>

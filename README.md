@@ -17,6 +17,7 @@ One single `index.html`, no build step, no dependencies. Open it and it plays.
 
 ## What it does
 
+0. **A birthday countdown** （v8 新增） — the first screen is a big live countdown to the next birthday at 00:00 China time (UTC+8), generated automatically from the birth date — no input needed, correct in any timezone. On the day itself it celebrates instead. Tap 开始 / Start to enter. 第一屏是一个大大的生日倒计时：按东八区（UTC+8）算到下个生日零点，由出生日期自动生成，不需要访客填写任何东西；生日当天会变成庆祝状态。
 1. **A simulated chat** — messages arrive one by one in a phone-style chat box, with typing dots and tap-to-reply choices (a small branching script, including a "Crazy Weekday" joke that follows the real weekday of the birthday).
 2. **What's special about your birthday** — one plain sentence per screen, tap to see the next: the weekday you were born, who shares your birthday, what happened on this day in history, your birth flower, how many days you've been in the world, and the age you're turning.
 3. **Balloons, lights and a cake** — balloons rise from the bottom of the screen, and there's one candle to tap out and make a wish.
