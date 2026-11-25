@@ -436,7 +436,7 @@
        （出生星期、同天名人、历史事件、生辰花、
        天数、年龄）都会自动重新计算，不用再手动改。
        也可以不改代码，直接在网址后面加 ?date=YYYY-MM-DD，
-       例如 index.html?date=2007-01-07 —— 网址里的日期优先。
+       例如 index.html?date=2000-01-01 —— 网址里的日期优先。
        日期无效时自动回退到这里的 birthDate；
        两处都无效时才使用下面 special.points 里的示例占位句。
        ================================================================ */
@@ -471,7 +471,7 @@
     };
 
     var CONFIG_ZH = {
-      birthDate: "2007-01-07",       // ← 朋友的出生日期 YYYY-MM-DD（演示：2007-01-07）
+      birthDate: "2000-01-01",       // ← 默认出生日期 YYYY-MM-DD（GitHub 演示：2000-01-01；给朋友的链接可用 ?date= 换成他的日期）
       friendName: "Friend",          // ← 换成朋友的名字 / 昵称
       senderName: "我",              // ← 送祝福的人（信末落款）
       avatarLetter: "F",             // ← 聊天头像里的字母
@@ -538,7 +538,7 @@
     };
 
     var CONFIG_EN = {
-      birthDate: "2007-01-07",
+      birthDate: "2000-01-01",
       friendName: "Friend",
       senderName: "Me",
       avatarLetter: "F",

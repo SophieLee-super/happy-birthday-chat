@@ -28,7 +28,7 @@ One single `index.html`, no build step, no dependencies. Open it and it plays.
 Everything personal lives in `CONFIG` blocks at the top of the script inside `index.html` — `CONFIG_ZH` for Chinese and `CONFIG_EN` for English:
 
 - Change `birthDate` to your friend's birthday (`YYYY-MM-DD`) — the weekday joke and the whole "special birthday" section regenerate automatically, in both languages.
-- Or just share a link with the date in it: `index.html?date=2007-01-07` — the date in the link wins, no code editing needed. Add `&lang=en` for English.
+- Or just share a link with the date in it: `index.html?date=2000-01-01` — the date in the link wins, no code editing needed. Add `&lang=en` for English.
 - Edit the chat lines, the choice replies, and the letter text in the CONFIG blocks, word for word however you like.
 - Same-day celebrities / history lines live in small lookup tables keyed by `MM-DD` in each language — add your friend's date if it's not there yet (dates not in the table simply skip those two lines).
 

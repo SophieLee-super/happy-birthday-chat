@@ -8,6 +8,7 @@ This repo was first published at v6 (2026-11-18). The earlier iterations were bu
 
 - New **Act 0 — a big countdown page** is now the first screen: days / hours / minutes / seconds ticking down live to the next birthday at **00:00 China time (UTC+8)**, computed from the same `birthDate` (or `?date=`) — the visitor never fills anything in, and the viewer's own timezone never skews it
 - The countdown shows the target date and the age being turned; on the birthday itself (UTC+8) it switches to a "就是今天 / It's today!" state
+- This GitHub release uses the demo birthDate **2000-01-01** by default (next birthday: 2027-01-01 00:00 UTC+8, turning 27); a personal link can still carry the real date with `?date=YYYY-MM-DD`
 - A **开始 / Start** button leads into Act 1 (the chat) as before; the countdown is fully bilingual like everything else and follows the 中文 / EN switch
 - All four original acts unchanged
 
