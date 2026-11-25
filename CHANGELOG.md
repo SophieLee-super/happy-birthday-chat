@@ -4,7 +4,12 @@ Every version of this project stays reachable — updates are always new commits
 
 This repo was first published at v6 (2026-11-18). The earlier iterations were built and reviewed one by one before the first upload; they're recorded here so the project's story is complete.
 
-## v8 — 2026-11-25 · current · 生日倒计时 Birthday Countdown
+## v8.1 — 2026-11-25 · current · 倒计时对比度 Countdown Contrast
+
+- Countdown numbers are now **deep accent-red and extra bold**, on the theme surface colour instead of plain white — clearly readable in both light and dark mode (the old white cells washed the digits out on dark phones)
+- Labels and the target-date line darkened to match; nothing else changed
+
+## v8 — 2026-11-25 · 生日倒计时 Birthday Countdown
 
 - New **Act 0 — a big countdown page** is now the first screen: days / hours / minutes / seconds ticking down live to the next birthday at **00:00 China time (UTC+8)**, computed from the same `birthDate` (or `?date=`) — the visitor never fills anything in, and the viewer's own timezone never skews it
 - The countdown shows the target date and the age being turned; on the birthday itself (UTC+8) it switches to a "就是今天 / It's today!" state
